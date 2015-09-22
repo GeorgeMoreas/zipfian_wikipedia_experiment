@@ -4,9 +4,10 @@ import unicodedata
 import string, re
 import operator
 import matplotlib.pyplot as plt
+import math
 
 def a():
-    response = urllib2.urlopen('https://en.wikipedia.org/wiki/%22Hello,_World!%22_program')
+    response = urllib2.urlopen('https://en.wikipedia.org/wiki/United_States')
     html = response.read()
     soup = BeautifulSoup.BeautifulSoup(html)
     div = soup.find(id="mw-content-text")
@@ -15,8 +16,9 @@ def a():
 
     for p in div.findAll('p'):
         inner_p = p.getText(separator=u' ')
-        pattern = re.compile('[^a-zA-Z0-9\s]')
+        pattern = re.compile('[^a-zA-Z\s]')
         inner_p = pattern.sub('', inner_p)
+
         all_p.append(str(inner_p))
 
     all_words = []
@@ -28,10 +30,11 @@ def a():
 
     for p in all_words:
         for word in p:
-            if word in word_count.keys():
-                word_count[word] += 1
+            lower_word = word.lower()
+            if lower_word in word_count.keys():
+                word_count[lower_word] += 1
             else:
-                word_count[word] = 1
+                word_count[lower_word] = 1
 
     sorted_count = sorted(word_count.items(), key=operator.itemgetter(1))
     sorted_count.reverse()
@@ -49,24 +52,31 @@ def a():
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
+    ax.set_xscale('log')
 
-    plt.axis([-10, len(sorted_count) * 1.1, 0, max(all_points) * 1.1])
-    plt.title('Zipfs Law Demonstration')
-    plt.plot(all_points)
+    all_expected = []
+    all_log_points = []
 
-    index = 0
-
-    for xy in zip(range(len(all_points)), all_points):
-        if index < 10:
+    for index in range(len(all_points)):
+        all_log_points.append(math.log(all_points[index]))
+        if index < 20:
             expected = all_points[0] / (index + 1)
+            all_expected.append(expected)
             label = all_labels[index] + \
                     " : " + \
                     str(all_points[index]) + \
                     ", expected : " + \
                     str(expected)
-            ax.annotate(label, xy=xy)
+            print label
         index += 1
 
+
+    plt.axis([0.8,
+              len(all_log_points) * 1.2,
+              max(all_log_points) * -0.1,
+              max(all_log_points) * 1.1])
+    plt.title("""Zipf's Law Demonstration""")
+    plt.plot(all_log_points, 'gH', markeredgecolor='g')
     plt.draw()
     plt.show(block=False)
 
