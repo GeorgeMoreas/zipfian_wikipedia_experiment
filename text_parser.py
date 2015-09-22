@@ -11,8 +11,9 @@ def a():
     all_p = []
 
     for p in div.findAll('p'):
-        inner_p = p.text
+        inner_p = p.getText(separator=u' ')
         all_p.append(inner_p)
         all_p.append(' ')
 
     print all_p
+
