@@ -5,10 +5,33 @@ import string, re
 import operator
 import matplotlib.pyplot as plt
 import math
+import requests
 
+from requests.exceptions import HTTPError
 
-def a(topic = 'Monty_Python'):
-    response = urllib2.urlopen('https://en.wikipedia.org/wiki/' + topic)
+def start():
+    while True:
+        print ' '
+        a('!NONE')
+
+def a(topic):
+    if topic == '!NONE':
+        topic = raw_input('Please enter a topic: ')
+        topic.replace(' ', '_')
+
+    try:
+        topic.replace(' ', '_')
+        r = requests.get('https://en.wikipedia.org/wiki/' + topic)
+        r.raise_for_status()
+    except HTTPError:
+        topic = raw_input('Article does not exist. Check spelling or enter another topic: ')
+        topic.replace(' ', '_')
+        a(topic)
+        return
+    else:
+        topic.replace(' ', '_')
+        response = urllib2.urlopen('https://en.wikipedia.org/wiki/' + topic)
+
     html = response.read()
     soup = BeautifulSoup.BeautifulSoup(html)
     div = soup.find(id="mw-content-text")
