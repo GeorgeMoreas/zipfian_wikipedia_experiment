@@ -6,8 +6,9 @@ import operator
 import matplotlib.pyplot as plt
 import math
 
-def a():
-    response = urllib2.urlopen('https://en.wikipedia.org/wiki/United_States')
+
+def a(topic = 'Monty_Python'):
+    response = urllib2.urlopen('https://en.wikipedia.org/wiki/' + topic)
     html = response.read()
     soup = BeautifulSoup.BeautifulSoup(html)
     div = soup.find(id="mw-content-text")
@@ -19,7 +20,8 @@ def a():
         pattern = re.compile('[^a-zA-Z\s]')
         inner_p = pattern.sub('', inner_p)
 
-        all_p.append(str(inner_p))
+        inner_p.encode('ascii', 'ignore')
+        all_p.append(inner_p)
 
     all_words = []
 
