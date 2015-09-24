@@ -17,7 +17,7 @@ def start():
 def a(topic):
     if topic == '!NONE':
         topic = raw_input('Please enter a topic: ')
-        
+
     topic.replace(' ', '_')
 
     try:
@@ -50,9 +50,11 @@ def a(topic):
         all_words.append(p.split())
 
     word_count = {}
+    total_word_count = 0
 
     for p in all_words:
         for word in p:
+            total_word_count += 1
             lower_word = word.lower()
             if lower_word in word_count.keys():
                 word_count[lower_word] += 1
@@ -98,7 +100,7 @@ def a(topic):
               len(all_log_points) * 1.2,
               max(all_log_points) * -0.1,
               max(all_log_points) * 1.1])
-    plt.title("""Zipf's Law Demonstration""")
+    plt.title("""Zipf's Law Demo   ||   Total Words = """ + str(total_word_count))
     plt.plot(all_log_points, 'gH', markeredgecolor='g')
     plt.draw()
     plt.show(block=False)
